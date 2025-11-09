@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import SetupPage from './pages/SetupPage';
 import PlayPage from './pages/PlayPage';

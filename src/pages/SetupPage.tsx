@@ -1,15 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { shuffle } from 'lodash/fp';
-import { Row, Col, Card, Button, Input, Typography, Space, Table, Upload, message, Collapse, Modal } from 'antd';
+import {
+  Row,
+  Col,
+  Card,
+  Button,
+  Input,
+  Typography,
+  Space,
+  Table,
+  Upload,
+  message,
+  Collapse,
+  Modal,
+} from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
-import { Tournament, Item } from '../types/tournament';
+import type { Tournament, Item } from '../types/tournament';
 import { TournamentRepository } from '../modules/tournament/TournamentRepository';
 import { buildTournament } from '../modules/tournament/BracketBuilder';
 import BracketGrid from '../components/BracketGrid';
-import { parseCSV } from '../modules/csv/parser'
-import { generateId } from '../utils/id'
+import { parseCSV } from '../modules/csv/parser';
+import { generateId } from '../utils/id';
 
 import styles from './SetupPage.module.css';
 
@@ -18,7 +32,6 @@ const { Title, Text } = Typography;
 const TournamentSetupPage: React.FC = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
-  const [shuffled, setShuffled] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -38,7 +51,12 @@ const TournamentSetupPage: React.FC = () => {
     }
     setItems([
       ...items,
-      { id: generateId(), name: name.trim(), description: description.trim() || undefined, image: image.trim() || undefined }
+      {
+        id: generateId(),
+        name: name.trim(),
+        description: description.trim() || undefined,
+        image: image.trim() || undefined,
+      },
     ]);
     setName('');
     setDescription('');
@@ -48,7 +66,7 @@ const TournamentSetupPage: React.FC = () => {
 
   const handleFile = (file: File) => {
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
       const text = e.target?.result as string;
       const newItems = parseCSV(text);
       setItems([...items, ...newItems]);
@@ -59,10 +77,7 @@ const TournamentSetupPage: React.FC = () => {
 
   const generateTournament = () => {
     if (!title.trim() || items.length < 2) return;
-    const tournament = buildTournament(
-      shuffled ? shuffle(items) : items,
-      title.trim()
-    );
+    const tournament = buildTournament(items, title.trim());
     setTournament(tournament);
   };
 
@@ -74,20 +89,34 @@ const TournamentSetupPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <Title level={2} className={styles.title}>Настройка турнира и импорт участников</Title>
+      <Title level={2} className={styles.title}>
+        Настройка турнира и импорт участников
+      </Title>
       <Card className={styles.card}>
         <Space direction="vertical" className={styles.fullWidth} size={16}>
           <Text>Заголовок турнира</Text>
-          <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="Название турнира" className={styles.marginBottom8} />
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Название турнира"
+            className={styles.marginBottom8}
+          />
 
           <Space direction="horizontal">
-            <Button disabled={items.length < 2 || !title.trim()} onClick={() => {
-              generateTournament();
-              setIsPreviewVisible(true);
-            }}>
+            <Button
+              disabled={items.length < 2 || !title.trim()}
+              onClick={() => {
+                generateTournament();
+                setIsPreviewVisible(true);
+              }}
+            >
               Предпросмотр турнира
             </Button>
-            <Button type="primary" disabled={!tournament} onClick={saveTournament}>
+            <Button
+              type="primary"
+              disabled={!tournament}
+              onClick={saveTournament}
+            >
               Создать турнир
             </Button>
           </Space>
@@ -97,7 +126,7 @@ const TournamentSetupPage: React.FC = () => {
               <Upload.Dragger
                 accept=".csv"
                 showUploadList={false}
-                beforeUpload={file => {
+                beforeUpload={(file) => {
                   handleFile(file);
                   message.success('Файл загружен');
                   return false;
@@ -108,46 +137,92 @@ const TournamentSetupPage: React.FC = () => {
             </Col>
             <Col span={12}>
               <Space direction="vertical" style={{ width: '100%' }}>
-                <Input value={name} onChange={e => setName(e.target.value)} placeholder="Название участника" className={styles.marginTop8} />
-                <Input value={description} onChange={e => setDescription(e.target.value)} placeholder="Описание" className={styles.marginTop8} />
-                <Input value={image} onChange={e => setImage(e.target.value)} placeholder="URL картинки" className={styles.marginTop8} />
-                <Button type="primary" onClick={handleAdd} className={styles.marginTop8}>Добавить участника</Button>
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Название участника"
+                  className={styles.marginTop8}
+                />
+                <Input
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Описание"
+                  className={styles.marginTop8}
+                />
+                <Input
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  placeholder="URL картинки"
+                  className={styles.marginTop8}
+                />
+                <Button
+                  type="primary"
+                  onClick={handleAdd}
+                  className={styles.marginTop8}
+                >
+                  Добавить участника
+                </Button>
                 {error && <Text type="danger">{error}</Text>}
               </Space>
             </Col>
           </Row>
 
           <Space.Compact direction="horizontal" block>
-            <Button onClick={() => setItems(shuffle(items))}>Перемешать участников</Button>
-            <Button icon={<DeleteOutlined />} onClick={() => setItems([])}>Очистить список</Button>
+            <Button onClick={() => setItems(shuffle(items))}>
+              Перемешать участников
+            </Button>
+            <Button icon={<DeleteOutlined />} onClick={() => setItems([])}>
+              Очистить список
+            </Button>
           </Space.Compact>
 
           <Collapse className={styles.fullWidth}>
-            <Collapse.Panel header={`Список участников (${items.length})`} key="participants">
+            <Collapse.Panel
+              header={`Список участников (${items.length})`}
+              key="participants"
+            >
               <Table
                 dataSource={items}
                 rowKey="id"
                 pagination={false}
                 columns={[
-                  { title: '#', key: 'name', render: (_: any, __: Item, index: number) => index + 1 },
+                  {
+                    title: '#',
+                    key: 'name',
+                    render: (_, __, index) => index + 1,
+                  },
                   { title: 'Название', dataIndex: 'name', key: 'name' },
-                  { title: 'Описание', dataIndex: 'description', key: 'description' },
+                  {
+                    title: 'Описание',
+                    dataIndex: 'description',
+                    key: 'description',
+                  },
                   {
                     title: 'Картинка',
                     dataIndex: 'image',
                     key: 'image',
-                    render: (img: string) => img ? <img src={img} alt="img" width={40} /> : '-'
+                    render: (img: string) =>
+                      img ? <img src={img} alt="img" width={40} /> : '-',
                   },
                   {
                     title: '',
                     key: 'actions',
-                    render: (_: any, record: Item) => (
-                      <Button danger size="small" icon={<DeleteOutlined />} onClick={() => setItems(items.filter(i => i.id !== record.id))} />
-                    )
-                  }
+                    render: (_, record: Item) => (
+                      <Button
+                        danger
+                        size="small"
+                        icon={<DeleteOutlined />}
+                        onClick={() =>
+                          setItems(items.filter((i) => i.id !== record.id))
+                        }
+                      />
+                    ),
+                  },
                 ]}
               />
-              {items.length < 2 && <Text type="warning">Минимум 2 участника</Text>}
+              {items.length < 2 && (
+                <Text type="warning">Минимум 2 участника</Text>
+              )}
             </Collapse.Panel>
           </Collapse>
         </Space>

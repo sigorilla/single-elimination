@@ -20,6 +20,7 @@
     "react-tournament-brackets": "^1.0.41"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@types/jest": "^30.0.0",

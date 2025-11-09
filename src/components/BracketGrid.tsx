@@ -1,7 +1,11 @@
-
-import React, { useRef } from 'react';
-import { Tournament } from '../types/tournament';
-import { SingleEliminationBracket, Match as RTBMatch, SVGViewer } from 'react-tournament-brackets';
+import type React from 'react';
+import { useRef } from 'react';
+import type { Tournament } from '../types/tournament';
+import {
+  SingleEliminationBracket,
+  Match as RTBMatch,
+  SVGViewer,
+} from 'react-tournament-brackets';
 import useComponentSize from '@rehooks/component-size';
 
 interface BracketGridProps {
@@ -11,14 +15,16 @@ interface BracketGridProps {
 function toRTBMatches(matches: Tournament['matches']) {
   // Группируем матчи по раундам
   const rounds: Record<number, Tournament['matches']> = {};
-  matches.forEach(m => {
+  matches.forEach((m) => {
     if (!rounds[m.round]) rounds[m.round] = [];
     rounds[m.round].push(m);
   });
 
   // Связываем nextMatchId для любого количества пар
   const matchIdToNext: Record<string, string | null> = {};
-  const roundNumbers = Object.keys(rounds).map(Number).sort((a, b) => a - b);
+  const roundNumbers = Object.keys(rounds)
+    .map(Number)
+    .sort((a, b) => a - b);
   for (let i = 0; i < roundNumbers.length - 1; i++) {
     const curr = rounds[roundNumbers[i]];
     const next = rounds[roundNumbers[i + 1]];
@@ -26,12 +32,12 @@ function toRTBMatches(matches: Tournament['matches']) {
     curr.forEach((m, idx) => {
       // Для каждого матча ищем ближайший следующий (idx / curr.length * nextLen)
       // Это равномерное распределение, работает для некратных двойке
-      const nextIdx = Math.floor(idx * nextLen / curr.length);
+      const nextIdx = Math.floor((idx * nextLen) / curr.length);
       matchIdToNext[m.id] = next[nextIdx]?.id || null;
     });
   }
   // Финальный раунд — nextMatchId = null
-  rounds[roundNumbers[roundNumbers.length - 1]].forEach(m => {
+  rounds[roundNumbers[roundNumbers.length - 1]].forEach((m) => {
     matchIdToNext[m.id] = null;
   });
 
@@ -57,7 +63,7 @@ function toRTBMatches(matches: Tournament['matches']) {
     } else {
       // Фиктивный участник для автопрохода (bye)
       participants.push({
-        id: 'bye-' + m.id,
+        id: `bye-${m.id}`,
         name: '—',
         isWinner: false,
         resultText: '',

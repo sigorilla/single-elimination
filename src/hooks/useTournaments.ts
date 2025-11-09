@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Tournament } from '../types/tournament';
+import type { Tournament } from '../types/tournament';
 import { TournamentRepository } from '../modules/tournament/TournamentRepository';
 
 export function useTournaments() {
