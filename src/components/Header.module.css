@@ -1,0 +1,11 @@
+.header {
+  background: #fff;
+  margin-bottom: 16px;
+  padding: 0 12px;
+  box-shadow: 0 2px 8px #f0f1f2;
+  min-height: 44px;
+}
+.menu {
+  min-width: 120px;
+  font-size: 0.95rem;
+}
