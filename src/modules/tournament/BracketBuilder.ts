@@ -1,23 +1,13 @@
-import { Tournament, Item, Match } from '../../types/tournament';
-
-function isPowerOfTwo(n: number) {
-  return (n & (n - 1)) === 0 && n !== 0;
-}
-
-function nextPowerOfTwo(n: number) {
-  return Math.pow(2, Math.ceil(Math.log2(n)));
-}
-
-
+import type { Tournament, Item, Match } from '../../types/tournament';
 
 export function buildTournament(items: Item[], title: string): Tournament {
   const matches: Match[] = [];
   let round = 1;
-  let currentItems = [...items];
+  let currentItems: (Item | undefined)[] = [...items];
 
   // Генерация всех раундов
   while (currentItems.length > 1) {
-    const nextItems: Item[] = [];
+    const nextItems: (Item | undefined)[] = [];
     for (let i = 0; i < currentItems.length; i += 2) {
       if (i + 1 < currentItems.length) {
         matches.push({
@@ -26,14 +16,14 @@ export function buildTournament(items: Item[], title: string): Tournament {
           left: currentItems[i],
           right: currentItems[i + 1],
         });
-        nextItems.push(null as any); // плейсхолдер для победителя
+        nextItems.push(undefined); // плейсхолдер для победителя
       } else {
         matches.push({
           id: `m${round}-${Math.ceil(i / 2)}`,
           round,
           left: currentItems[i],
         });
-        nextItems.push(null as any); // плейсхолдер для победителя
+        nextItems.push(undefined); // плейсхолдер для победителя
       }
     }
     currentItems = nextItems;
@@ -41,7 +31,7 @@ export function buildTournament(items: Item[], title: string): Tournament {
   }
 
   // Плейсхолдеры для следующих раундов (без участников)
-  let prevRound = matches.filter(m => m.round === round - 1);
+  let prevRound = matches.filter((m) => m.round === round - 1);
   while (prevRound.length > 1) {
     const nextRound: Match[] = [];
     for (let i = 0; i < prevRound.length; i += 2) {

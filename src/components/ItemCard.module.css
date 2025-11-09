@@ -8,7 +8,9 @@
   align-items: center;
   background: #fafcff;
   box-shadow: 0 2px 8px #f0f1f2;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
 }
 .selected {
   border-color: #1890ff;
